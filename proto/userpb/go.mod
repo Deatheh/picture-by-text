@@ -1,4 +1,4 @@
-module picture-by-text
+module userpb
 
 go 1.26.1
 
