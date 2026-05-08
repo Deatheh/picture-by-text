@@ -1,7 +1,9 @@
-package app
+package main
 
 import (
 	"api-gateway/internal/config"
+	"api-gateway/internal/handler"
+	"fmt"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -15,9 +17,9 @@ func main() {
 	envConf := config.NewEnvConfig()
 	envConf.PrintConfigWithHiddenSecrets()
 
-	/*handlers := handler.NewHandler(envConf)
+	handlers := handler.NewRouter(envConf)
 
 	if err := handlers.InitRoutes().Run(fmt.Sprintf(":%v", envConf.Application.Port)); err != nil {
 		log.Fatal(fmt.Errorf("server run error: %w", err))
-	}*/
+	}
 }
