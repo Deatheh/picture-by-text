@@ -25,7 +25,6 @@ func main() {
 	userClient, err := grpcclient.NewUserClient(envConf.Services.UserServiceURL)
 	if err != nil {
 		log.Printf("WARNING: Failed to create user client: %v", err)
-		log.Println("API Gateway will start but /auth/* endpoints will return errors")
 		userClient = nil
 	} else {
 		defer userClient.Close()

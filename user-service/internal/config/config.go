@@ -24,6 +24,11 @@ type PostgreSQL struct {
 	URL      string
 }
 
+// Конфиги для подключения к сервисам
+type Services struct {
+	StorageServiceURL string
+}
+
 // Redis конфиг
 type Redis struct {
 	Host       string
@@ -46,6 +51,7 @@ type JWT struct {
 // Общий конфиг
 type Config struct {
 	Application Application
+	Services    Services
 	PostgreSQL  PostgreSQL
 	Redis       Redis
 	JWT         JWT
@@ -57,6 +63,9 @@ func NewEnvConfig() *Config {
 			Host:    getEnv("USER_SERVICE_HOST", "user-service"),
 			Port:    getEnvAsInt("USER_SERVICE_PORT", 50051),
 			LogPath: getEnv("APP_LOG_PATH", "./logs"),
+		},
+		Services: Services{
+			StorageServiceURL: getEnv("STORAGE_SERVICE_URL", "storage-service:50053"),
 		},
 		PostgreSQL: PostgreSQL{
 			Host:     getEnv("POSTGRES_HOST", "localhost"),
@@ -128,6 +137,9 @@ func (c *Config) PrintConfigWithHiddenSecrets() {
 	fmt.Printf("  Host: %s\n", c.Application.Host)
 	fmt.Printf("  Port: %d\n", c.Application.Port)
 	fmt.Printf("  LogPath: %s\n", c.Application.LogPath)
+
+	fmt.Println("\n[Services]")
+	fmt.Printf("  Storage Service: %s\n", c.Services.StorageServiceURL)
 
 	fmt.Println("\n[PostgreSQL]")
 	fmt.Printf("  Host: %s\n", c.PostgreSQL.Host)
