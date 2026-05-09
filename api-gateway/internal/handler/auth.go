@@ -1,15 +1,12 @@
 package handler
 
 import (
+	"api-gateway/internal/dpo"
+	"api-gateway/pkg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
-type registerInput struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8"`
-}
 
 func (h *Handler) HandleRegistration(ctx *gin.Context) {
 	if h.userClient == nil {
@@ -19,15 +16,25 @@ func (h *Handler) HandleRegistration(ctx *gin.Context) {
 		return
 	}
 
-	var input registerInput
+	var input dpo.Regisration
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Validation failed: " + err.Error(),
-		})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error getting request data: invalid request body"})
 		return
 	}
 
-	// Вызываем gRPC метод user-service
+	if input.Email == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error handling register: empty email"})
+		return
+	}
+	if !pkg.CheckIsEmailAllowed(input.Email) {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error handling adding: invalid email"})
+		return
+	}
+	if input.Password == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error handling register: empty password"})
+		return
+	}
+
 	success, message, err := h.userClient.Register(
 		ctx.Request.Context(),
 		input.Email,
@@ -42,13 +49,9 @@ func (h *Handler) HandleRegistration(ctx *gin.Context) {
 	}
 
 	if !success {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": message,
-		})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": message})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": message,
-	})
+	ctx.JSON(http.StatusOK, gin.H{"message": message})
 }
