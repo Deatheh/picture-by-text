@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
@@ -19,24 +18,18 @@ type UserClient struct {
 }
 
 func NewUserClient(serviceURL string) (*UserClient, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
+	// Создаём соединение без блокировки
 	conn, err := grpc.NewClient(serviceURL,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithConnectParams(grpc.ConnectParams{
-			MinConnectTimeout: 5 * time.Second,
-		}),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create connection: %w", err)
 	}
 
-	if err := waitForConnection(ctx, conn); err != nil {
-		return nil, fmt.Errorf("failed to connect: %w", err)
-	}
+	// Запускаем соединение в фоне
+	conn.Connect()
 
-	log.Printf("Connected to user-service at %s", serviceURL)
+	log.Printf("Created connection to user-service at %s (connecting in background)", serviceURL)
 
 	return &UserClient{
 		conn:   conn,
@@ -44,28 +37,12 @@ func NewUserClient(serviceURL string) (*UserClient, error) {
 	}, nil
 }
 
-func waitForConnection(ctx context.Context, conn *grpc.ClientConn) error {
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
-			state := conn.GetState()
-			if state == connectivity.Ready {
-				return nil
-			}
-			if !conn.WaitForStateChange(ctx, state) {
-				return fmt.Errorf("connection state change failed")
-			}
-		}
-	}
-}
-
 func (c *UserClient) Close() error {
 	return c.conn.Close()
 }
 
 func (c *UserClient) IsHealthy() bool {
+	// Проверяем состояние соединения
 	state := c.conn.GetState()
 	return state == connectivity.Ready || state == connectivity.Idle
 }
@@ -78,8 +55,10 @@ func (c *UserClient) Register(ctx context.Context, email, password string) (bool
 
 	resp, err := c.client.Register(ctx, req)
 	if err != nil {
+		log.Printf("Register RPC failed: %v", err)
 		return false, "", fmt.Errorf("gRPC call Register failed: %w", err)
 	}
 
+	log.Printf("Register response: success=%v, message=%s", resp.Success, resp.Message)
 	return resp.Success, resp.Message, nil
 }

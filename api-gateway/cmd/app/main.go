@@ -14,18 +14,22 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load("../../.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Println("No .env file found, using system environment variables")
 	}
 
 	envConf := config.NewEnvConfig()
 	envConf.PrintConfigWithHiddenSecrets()
 
+	var userClient *grpcclient.UserClient
 	userClient, err := grpcclient.NewUserClient(envConf.Services.UserServiceURL)
 	if err != nil {
-		log.Fatalf("Failed to create user client: %v", err)
+		log.Printf("WARNING: Failed to create user client: %v", err)
+		log.Println("API Gateway will start but /auth/* endpoints will return errors")
+		userClient = nil
+	} else {
+		defer userClient.Close()
 	}
-	defer userClient.Close()
 
 	handlers := handler.NewRouter(envConf, userClient)
 

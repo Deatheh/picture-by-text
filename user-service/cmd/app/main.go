@@ -17,14 +17,14 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load("../../.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Println("No .env file found, using system environment variables")
 	}
 
 	envConf := config.NewEnvConfig()
 	envConf.PrintConfigWithHiddenSecrets()
 
-	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", envConf.Application.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", envConf.Application.Host, envConf.Application.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
