@@ -1,6 +1,7 @@
 .PHONY: proto
 proto:
 	protoc --go_out=proto --go-grpc_out=proto proto/user.proto
+	protoc --go_out=proto --go-grpc_out=proto proto/storage.proto
 
 .PHONY: run-user-service
 run-user-service:

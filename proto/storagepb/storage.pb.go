@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v7.34.1
-// source: proto/user.proto
+// source: proto/storage.proto
 
-package userpb
+package storagepb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -31,7 +31,7 @@ type RegisterRequest struct {
 
 func (x *RegisterRequest) Reset() {
 	*x = RegisterRequest{}
-	mi := &file_proto_user_proto_msgTypes[0]
+	mi := &file_proto_storage_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +43,7 @@ func (x *RegisterRequest) String() string {
 func (*RegisterRequest) ProtoMessage() {}
 
 func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_proto_msgTypes[0]
+	mi := &file_proto_storage_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
 func (*RegisterRequest) Descriptor() ([]byte, []int) {
-	return file_proto_user_proto_rawDescGZIP(), []int{0}
+	return file_proto_storage_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *RegisterRequest) GetEmail() string {
@@ -84,7 +84,7 @@ type RegisterResponse struct {
 
 func (x *RegisterResponse) Reset() {
 	*x = RegisterResponse{}
-	mi := &file_proto_user_proto_msgTypes[1]
+	mi := &file_proto_storage_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -96,7 +96,7 @@ func (x *RegisterResponse) String() string {
 func (*RegisterResponse) ProtoMessage() {}
 
 func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_proto_msgTypes[1]
+	mi := &file_proto_storage_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +109,7 @@ func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
 func (*RegisterResponse) Descriptor() ([]byte, []int) {
-	return file_proto_user_proto_rawDescGZIP(), []int{1}
+	return file_proto_storage_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RegisterResponse) GetSuccess() bool {
@@ -141,7 +141,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_proto_user_proto_msgTypes[2]
+	mi := &file_proto_storage_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -153,7 +153,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_proto_msgTypes[2]
+	mi := &file_proto_storage_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -166,7 +166,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_proto_user_proto_rawDescGZIP(), []int{2}
+	return file_proto_storage_proto_rawDescGZIP(), []int{2}
 }
 
 type HealthCheckResponse struct {
@@ -179,7 +179,7 @@ type HealthCheckResponse struct {
 
 func (x *HealthCheckResponse) Reset() {
 	*x = HealthCheckResponse{}
-	mi := &file_proto_user_proto_msgTypes[3]
+	mi := &file_proto_storage_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -191,7 +191,7 @@ func (x *HealthCheckResponse) String() string {
 func (*HealthCheckResponse) ProtoMessage() {}
 
 func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_user_proto_msgTypes[3]
+	mi := &file_proto_storage_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -204,7 +204,7 @@ func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
 func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
-	return file_proto_user_proto_rawDescGZIP(), []int{3}
+	return file_proto_storage_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *HealthCheckResponse) GetHealthy() bool {
@@ -221,11 +221,11 @@ func (x *HealthCheckResponse) GetService() string {
 	return ""
 }
 
-var File_proto_user_proto protoreflect.FileDescriptor
+var File_proto_storage_proto protoreflect.FileDescriptor
 
-const file_proto_user_proto_rawDesc = "" +
+const file_proto_storage_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/user.proto\x12\x06userpb\"C\n" +
+	"\x13proto/storage.proto\x12\tstoragepb\"C\n" +
 	"\x0fRegisterRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"Z\n" +
@@ -236,32 +236,32 @@ const file_proto_user_proto_rawDesc = "" +
 	"\x05Empty\"I\n" +
 	"\x13HealthCheckResponse\x12\x18\n" +
 	"\ahealthy\x18\x01 \x01(\bR\ahealthy\x12\x18\n" +
-	"\aservice\x18\x02 \x01(\tR\aservice2L\n" +
-	"\vUserService\x12=\n" +
-	"\bRegister\x12\x17.userpb.RegisterRequest\x1a\x18.userpb.RegisterResponseB\x11Z\x0f./userpb;userpbb\x06proto3"
+	"\aservice\x18\x02 \x01(\tR\aservice2U\n" +
+	"\x0eStorageService\x12C\n" +
+	"\bRegister\x12\x1a.storagepb.RegisterRequest\x1a\x1b.storagepb.RegisterResponseB\x17Z\x15./storagepb;storagepbb\x06proto3"
 
 var (
-	file_proto_user_proto_rawDescOnce sync.Once
-	file_proto_user_proto_rawDescData []byte
+	file_proto_storage_proto_rawDescOnce sync.Once
+	file_proto_storage_proto_rawDescData []byte
 )
 
-func file_proto_user_proto_rawDescGZIP() []byte {
-	file_proto_user_proto_rawDescOnce.Do(func() {
-		file_proto_user_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_user_proto_rawDesc), len(file_proto_user_proto_rawDesc)))
+func file_proto_storage_proto_rawDescGZIP() []byte {
+	file_proto_storage_proto_rawDescOnce.Do(func() {
+		file_proto_storage_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_storage_proto_rawDesc), len(file_proto_storage_proto_rawDesc)))
 	})
-	return file_proto_user_proto_rawDescData
+	return file_proto_storage_proto_rawDescData
 }
 
-var file_proto_user_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_proto_user_proto_goTypes = []any{
-	(*RegisterRequest)(nil),     // 0: userpb.RegisterRequest
-	(*RegisterResponse)(nil),    // 1: userpb.RegisterResponse
-	(*Empty)(nil),               // 2: userpb.Empty
-	(*HealthCheckResponse)(nil), // 3: userpb.HealthCheckResponse
+var file_proto_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_storage_proto_goTypes = []any{
+	(*RegisterRequest)(nil),     // 0: storagepb.RegisterRequest
+	(*RegisterResponse)(nil),    // 1: storagepb.RegisterResponse
+	(*Empty)(nil),               // 2: storagepb.Empty
+	(*HealthCheckResponse)(nil), // 3: storagepb.HealthCheckResponse
 }
-var file_proto_user_proto_depIdxs = []int32{
-	0, // 0: userpb.UserService.Register:input_type -> userpb.RegisterRequest
-	1, // 1: userpb.UserService.Register:output_type -> userpb.RegisterResponse
+var file_proto_storage_proto_depIdxs = []int32{
+	0, // 0: storagepb.StorageService.Register:input_type -> storagepb.RegisterRequest
+	1, // 1: storagepb.StorageService.Register:output_type -> storagepb.RegisterResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -269,26 +269,26 @@ var file_proto_user_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_user_proto_init() }
-func file_proto_user_proto_init() {
-	if File_proto_user_proto != nil {
+func init() { file_proto_storage_proto_init() }
+func file_proto_storage_proto_init() {
+	if File_proto_storage_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_user_proto_rawDesc), len(file_proto_user_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_storage_proto_rawDesc), len(file_proto_storage_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_user_proto_goTypes,
-		DependencyIndexes: file_proto_user_proto_depIdxs,
-		MessageInfos:      file_proto_user_proto_msgTypes,
+		GoTypes:           file_proto_storage_proto_goTypes,
+		DependencyIndexes: file_proto_storage_proto_depIdxs,
+		MessageInfos:      file_proto_storage_proto_msgTypes,
 	}.Build()
-	File_proto_user_proto = out.File
-	file_proto_user_proto_goTypes = nil
-	file_proto_user_proto_depIdxs = nil
+	File_proto_storage_proto = out.File
+	file_proto_storage_proto_goTypes = nil
+	file_proto_storage_proto_depIdxs = nil
 }

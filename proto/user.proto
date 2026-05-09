@@ -16,7 +16,8 @@ message RegisterRequest {
 
 message RegisterResponse {
     bool success = 1;
-    string message = 2;   
+    string message = 2;
+    string uuid = 3;   
 }
 
 message Empty {}

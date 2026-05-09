@@ -1,2 +1,28 @@
-syntax = "proto3"
+syntax = "proto3";
 
+package storagepb;
+
+option go_package = "./storagepb;storagepb";
+
+service StorageService {
+    rpc Register(RegisterRequest) returns (RegisterResponse);
+}
+
+
+message RegisterRequest {
+    string email = 1;       
+    string password = 2;     
+}
+
+message RegisterResponse {
+    bool success = 1;
+    string message = 2;
+    string uuid = 3;   
+}
+
+message Empty {}
+
+message HealthCheckResponse {
+    bool healthy = 1;
+    string service = 2;
+}
