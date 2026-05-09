@@ -35,7 +35,7 @@ func (h *Handler) HandleRegistration(ctx *gin.Context) {
 		return
 	}
 
-	success, message, err := h.userClient.Register(
+	success, uuid, err := h.userClient.Register(
 		ctx.Request.Context(),
 		input.Email,
 		input.Password,
@@ -49,9 +49,9 @@ func (h *Handler) HandleRegistration(ctx *gin.Context) {
 	}
 
 	if !success {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": message})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": message})
+	ctx.JSON(http.StatusOK, gin.H{"uuid": uuid})
 }

@@ -59,6 +59,6 @@ func (c *UserClient) Register(ctx context.Context, email, password string) (bool
 		return false, "", fmt.Errorf("gRPC call Register failed: %w", err)
 	}
 
-	log.Printf("Register response: success=%v, message=%s", resp.Success, resp.Message)
-	return resp.Success, resp.Message, nil
+	log.Printf("Register response: success=%v, message=%s", resp.Success, resp.Uuid)
+	return resp.Success, resp.Uuid, nil
 }

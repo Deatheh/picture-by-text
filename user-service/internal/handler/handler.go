@@ -22,8 +22,18 @@ func NewUserHandler(envConf *config.Config, storageClient *grpcclient.StorageCli
 func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	log.Printf("Register called: email=%s", req.Email)
 
+	success, uuid, err := h.storageClient.Register(
+		ctx,
+		req.Email,
+		req.Password,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &pb.RegisterResponse{
-		Success: true,
-		Message: "Registration successful (stub)",
+		Success: success,
+		Uuid:    uuid,
 	}, nil
 }
