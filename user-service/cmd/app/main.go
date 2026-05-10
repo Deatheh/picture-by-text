@@ -9,8 +9,9 @@ import (
 	"syscall"
 	"user-service/internal/config"
 	"user-service/internal/handler"
-
-	grpcclient "user-service/internal/grpc-client"
+	"user-service/internal/repository"
+	"user-service/internal/repository/db"
+	"user-service/internal/service"
 
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
@@ -26,15 +27,6 @@ func main() {
 	envConf := config.NewEnvConfig()
 	envConf.PrintConfigWithHiddenSecrets()
 
-	var storageClient *grpcclient.StorageClient
-	storageClient, err := grpcclient.NewStorageClient(envConf.Services.StorageServiceURL)
-	if err != nil {
-		log.Printf("WARNING: Failed to create storage client: %v", err)
-		storageClient = nil
-	} else {
-		defer storageClient.Close()
-	}
-
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", envConf.Application.Host, envConf.Application.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
@@ -42,7 +34,16 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	userHandler := handler.NewUserHandler(envConf, storageClient)
+	dbRepo, err := db.NewDatabaseInstance(envConf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbRepo.Close()
+
+	repository := &repository.Repository{DatabaseRepository: *dbRepo}
+	services := service.NewService(repository, envConf)
+
+	userHandler := handler.NewUserHandler(envConf, services)
 
 	pb.RegisterUserServiceServer(grpcServer, userHandler)
 

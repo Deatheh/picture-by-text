@@ -4,36 +4,51 @@ import (
 	"context"
 	"log"
 	"user-service/internal/config"
-	grpcclient "user-service/internal/grpc-client"
+	"user-service/internal/service"
 
 	pb "userpb"
 )
 
 type UserHandler struct {
 	pb.UnimplementedUserServiceServer
-	envConf       *config.Config
-	storageClient *grpcclient.StorageClient
+	envConf *config.Config
+	service *service.Service
 }
 
-func NewUserHandler(envConf *config.Config, storageClient *grpcclient.StorageClient) *UserHandler {
-	return &UserHandler{envConf: envConf, storageClient: storageClient}
+func NewUserHandler(envConf *config.Config, service *service.Service) *UserHandler {
+	return &UserHandler{envConf: envConf, service: service}
 }
 
 func (h *UserHandler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	log.Printf("Register called: email=%s", req.Email)
 
-	success, uuid, err := h.storageClient.Register(
-		ctx,
-		req.Email,
-		req.Password,
-	)
-
+	exists, err := h.service.User.IsEmailExists(req.Email)
 	if err != nil {
-		return nil, err
+		log.Printf("Error checking email existence: %v", err)
+		return &pb.RegisterResponse{
+			Success: false,
+			Uuid:    "",
+		}, nil
+	}
+	if exists {
+		log.Printf("Email already registered: %s", req.Email)
+		return &pb.RegisterResponse{
+			Success: false,
+			Uuid:    "",
+		}, nil
+	}
+
+	user, err := h.service.User.Add(req.Email, req.Password)
+	if err != nil {
+		log.Printf("Failed to create user: %v", err)
+		return &pb.RegisterResponse{
+			Success: false,
+			Uuid:    "",
+		}, nil
 	}
 
 	return &pb.RegisterResponse{
-		Success: success,
-		Uuid:    uuid,
+		Success: true,
+		Uuid:    user.Uuid,
 	}, nil
 }

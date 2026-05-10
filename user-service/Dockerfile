@@ -6,14 +6,12 @@ WORKDIR /build
 # Копируем оба proto (userpb для API, storagepb для вызовов)
 COPY proto/ ./proto/
 RUN cp -r ./proto/userpb ./userpb
-RUN cp -r ./proto/storagepb ./storagepb
 
 # Копируем go.mod и go.sum
 COPY user-service/go.mod user-service/go.sum ./
 
 # Заменяем оба replace
 RUN sed -i 's|../proto/userpb|./userpb|g' go.mod
-RUN sed -i 's|../proto/storagepb|./storagepb|g' go.mod
 
 RUN go mod download
 

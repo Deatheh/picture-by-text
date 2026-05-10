@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id VARCHAR(70) PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role_id INT NOT NULL DEFAULT 2 REFERENCES roles(id),
+    is_active BOOLEAN NOT NULL DEFAULT true
+);
+
+
+
+INSERT INTO roles (id, name) VALUES (1, 'admin'), (2, 'user')
+ON CONFLICT (id) DO NOTHING;
