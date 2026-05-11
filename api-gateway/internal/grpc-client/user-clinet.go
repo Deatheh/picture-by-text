@@ -62,3 +62,24 @@ func (c *UserClient) Register(ctx context.Context, email, password string) (bool
 	log.Printf("Register response: success=%v, message=%s", resp.Success, resp.Uuid)
 	return resp.Success, resp.Uuid, nil
 }
+
+func (c *UserClient) Login(ctx context.Context, email, password string) (bool, string, string, error) {
+	req := &pb.RegisterRequest{
+		Email:    email,
+		Password: password,
+	}
+	resp, err := c.client.Login(ctx, req)
+	if err != nil {
+		return false, "", "", err
+	}
+	return resp.Success, resp.AccsesToken, resp.RefreshToken, nil
+}
+
+func (c *UserClient) RefreshToken(ctx context.Context, refreshToken string) (bool, string, error) {
+	req := &pb.RefreshTokenRequest{RefreshToken: refreshToken}
+	resp, err := c.client.RefreshToken(ctx, req)
+	if err != nil {
+		return false, "", err
+	}
+	return resp.Success, resp.AccessToken, nil
+}

@@ -10,6 +10,7 @@ import (
 	"user-service/internal/config"
 	"user-service/internal/handler"
 	"user-service/internal/repository"
+	"user-service/internal/repository/cache"
 	"user-service/internal/repository/db"
 	"user-service/internal/service"
 
@@ -40,7 +41,17 @@ func main() {
 	}
 	defer dbRepo.Close()
 
-	repository := &repository.Repository{DatabaseRepository: *dbRepo}
+	redisClient, err := cache.NewRedisClient(
+		fmt.Sprintf("%s:%d", envConf.Redis.Host, envConf.Redis.Port),
+		envConf.Redis.Password,
+		envConf.Redis.SessionDB,
+	)
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
+	defer redisClient.Close()
+
+	repository := &repository.Repository{DatabaseRepository: dbRepo, Cache: redisClient}
 	services := service.NewService(repository, envConf)
 
 	userHandler := handler.NewUserHandler(envConf, services)

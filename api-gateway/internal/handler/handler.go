@@ -12,6 +12,8 @@ const (
 	Route = "/"
 
 	AuthRegisterRoute = "/auth/register"
+	AuthLoginRoute    = "/auth/login"
+	AuthRefreshhRoute = "/auth/refresh_token"
 )
 
 type Handler struct {
@@ -29,6 +31,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		auth.Use(logger.RequestLogger("auth"))
 		auth.POST(AuthRegisterRoute, h.HandleRegistration)
+		auth.POST(AuthLoginRoute, h.HandleLogin)
+		auth.POST(AuthRefreshhRoute, h.HandleRefreshToken)
 	}
 
 	return r

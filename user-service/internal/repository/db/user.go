@@ -33,3 +33,23 @@ func (dbr *DatabaseRepository) Add(email, passwordHash string) (*entities.User, 
 	}
 	return &user, nil
 }
+
+func (dbr *DatabaseRepository) GetByEmail(email string) (*entities.User, error) {
+	var user entities.User
+	query := `SELECT id, email, password, role_id, is_active FROM users WHERE email=$1`
+	err := dbr.DB.Get(&user, query, email)
+	if err != nil {
+		return nil, fmt.Errorf("get user by email: %w", err)
+	}
+	return &user, nil
+}
+
+func (dbr *DatabaseRepository) GetByID(id string) (*entities.User, error) {
+	var user entities.User
+	query := `SELECT id, email, password, role_id, is_active FROM users WHERE id=$1`
+	err := dbr.DB.Get(&user, query, id)
+	if err != nil {
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+	return &user, nil
+}
