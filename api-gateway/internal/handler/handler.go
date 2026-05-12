@@ -16,7 +16,8 @@ const (
 	AuthLoginRoute    = "/auth/login"
 	AuthRefreshhRoute = "/auth/refresh_token"
 
-	AdminUsersRoute = "/admin/users"
+	AdminUsersRoute  = "/admin/users"
+	AdminUserIdRoute = "/admin/users/:id"
 )
 
 type Handler struct {
@@ -42,7 +43,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	admin.Use(middleware.AdminMiddleware(h.userClient))
 	{
 		admin.GET(AdminUsersRoute, h.HandleListUsers)
-		admin.DELETE(AdminUsersRoute, h.HandleDeleteUser)
+		admin.DELETE(AdminUserIdRoute, h.HandleDeleteUser)
 	}
 
 	return r
