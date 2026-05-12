@@ -111,3 +111,75 @@ func (h *UserHandler) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequ
 
 	return &pb.RefreshTokenResponse{Success: true, AccessToken: newAccessToken}, nil
 }
+
+func (h *UserHandler) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
+	// Определяем значения по умолчанию
+	page := int(req.Page)
+	if page < 1 {
+		page = 1
+	}
+	limit := int(req.Limit)
+	if limit < 1 || limit > 100 {
+		limit = 20
+	}
+
+	users, total, err := h.service.User.ListUsers(page, limit)
+	if err != nil {
+		log.Printf("ListUsers failed: %v", err)
+		return &pb.ListUsersResponse{Users: []*pb.UserItem{}, Total: 0}, nil
+	}
+
+	var pbUsers []*pb.UserItem
+	for _, u := range users {
+		// Определяем роль по role_id
+		role := "user"
+		if u.RoleID == 1 {
+			role = "admin"
+		}
+		pbUsers = append(pbUsers, &pb.UserItem{
+			Id:            u.Uuid,
+			Email:         u.Email,
+			Role:          role,
+			RequestsCount: 0,
+		})
+	}
+
+	return &pb.ListUsersResponse{
+		Users: pbUsers,
+		Total: int32(total),
+	}, nil
+}
+
+func (h *UserHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+	// Проверка, что не удаляем самого себя (ID из контекста)
+	// Временно пропустим проверку
+
+	err := h.service.User.DeleteUser(req.UserId)
+	if err != nil {
+		log.Printf("DeleteUser failed: %v", err)
+		return &pb.DeleteUserResponse{Success: false, Message: err.Error()}, nil
+	}
+
+	// Удаляем refresh-токен из Redis
+	_ = h.service.Cache.DeleteRefreshToken(ctx, req.UserId)
+
+	return &pb.DeleteUserResponse{Success: true, Message: "User deleted successfully"}, nil
+}
+
+func (h *UserHandler) GetUserRole(ctx context.Context, req *pb.GetUserRoleRequest) (*pb.GetUserRoleResponse, error) {
+	log.Printf("GetUserRole called: user_id=%s", req.UserId)
+
+	user, err := h.service.User.GetByID(req.UserId)
+	if err != nil {
+		log.Printf("GetUserRole: user not found: %v", err)
+		return &pb.GetUserRoleResponse{Role: ""}, nil
+	}
+
+	role := "user"
+	if user.RoleID == 1 {
+		role = "admin"
+	}
+
+	log.Printf("GetUserRole: user_id=%s, role=%s", req.UserId, role)
+	return &pb.GetUserRoleResponse{Role: role}, nil
+}

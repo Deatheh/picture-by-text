@@ -47,3 +47,11 @@ func (s *UserService) SaveRefreshToken(ctx context.Context, userID, token string
 func (s *UserService) GetRefreshToken(ctx context.Context, userID string) (string, error) {
 	return s.repository.Cache.GetRefreshToken(ctx, userID)
 }
+
+func (s *UserService) ListUsers(page, limit int) ([]entities.User, int, error) {
+	return s.repository.DatabaseRepository.ListUsers(page, limit)
+}
+
+func (s *UserService) DeleteUser(id string) error {
+	return s.repository.DatabaseRepository.DeleteUser(id)
+}

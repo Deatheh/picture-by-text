@@ -83,3 +83,30 @@ func (c *UserClient) RefreshToken(ctx context.Context, refreshToken string) (boo
 	}
 	return resp.Success, resp.AccessToken, nil
 }
+
+func (c *UserClient) ListUsers(ctx context.Context, page, limit int32) ([]*pb.UserItem, int32, error) {
+	req := &pb.ListUsersRequest{Page: page, Limit: limit}
+	resp, err := c.client.ListUsers(ctx, req)
+	if err != nil {
+		return nil, 0, err
+	}
+	return resp.Users, resp.Total, nil
+}
+
+func (c *UserClient) DeleteUser(ctx context.Context, userID string) (bool, string, error) {
+	req := &pb.DeleteUserRequest{UserId: userID}
+	resp, err := c.client.DeleteUser(ctx, req)
+	if err != nil {
+		return false, "", err
+	}
+	return resp.Success, resp.Message, nil
+}
+
+func (c *UserClient) GetUserRole(ctx context.Context, userID string) (string, error) {
+	req := &pb.GetUserRoleRequest{UserId: userID}
+	resp, err := c.client.GetUserRole(ctx, req)
+	if err != nil {
+		return "", err
+	}
+	return resp.Role, nil
+}

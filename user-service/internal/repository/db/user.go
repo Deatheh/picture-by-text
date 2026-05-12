@@ -53,3 +53,42 @@ func (dbr *DatabaseRepository) GetByID(id string) (*entities.User, error) {
 	}
 	return &user, nil
 }
+
+func (dbr *DatabaseRepository) ListUsers(page, limit int) ([]entities.User, int, error) {
+	offset := (page - 1) * limit
+
+	// Получаем total count
+	var total int
+	countQuery := `SELECT COUNT(*) FROM users`
+	if err := dbr.DB.Get(&total, countQuery); err != nil {
+		return nil, 0, fmt.Errorf("count users: %w", err)
+	}
+
+	// Получаем пользователей с пагинацией
+	var users []entities.User
+	query := `
+        SELECT id, email, password, role_id, is_active
+        FROM users 
+        LIMIT $1 OFFSET $2
+    `
+	err := dbr.DB.Select(&users, query, limit, offset)
+	if err != nil {
+		return nil, 0, fmt.Errorf("list users: %w", err)
+	}
+
+	return users, total, nil
+}
+
+// DeleteUser удаляет пользователя по ID
+func (dbr *DatabaseRepository) DeleteUser(id string) error {
+	query := `DELETE FROM users WHERE id=$1`
+	result, err := dbr.DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("delete user: %w", err)
+	}
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("user not found")
+	}
+	return nil
+}

@@ -15,14 +15,24 @@ type User interface {
 	GetByID(id string) (*entities.User, error)
 	SaveRefreshToken(ctx context.Context, userID, token string, ttlSeconds int) error
 	GetRefreshToken(ctx context.Context, userID string) (string, error)
+	ListUsers(page, limit int) ([]entities.User, int, error)
+	DeleteUser(id string) error
+}
+
+type Cache interface {
+	SaveRefreshToken(ctx context.Context, userID, token string, ttlSeconds int) error
+	GetRefreshToken(ctx context.Context, userID string) (string, error)
+	DeleteRefreshToken(ctx context.Context, userID string) error
 }
 
 type Service struct {
 	User
+	Cache
 }
 
 func NewService(repo *repository.Repository, envConf *config.Config) *Service {
 	return &Service{
-		User: &UserService{repository: repo, envConf: envConf},
+		User:  &UserService{repository: repo, envConf: envConf},
+		Cache: &CacheService{repository: repo, envConf: envConf},
 	}
 }

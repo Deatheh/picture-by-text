@@ -10,6 +10,7 @@ service UserService {
     rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
     rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+    rpc GetUserRole(GetUserRoleRequest) returns (GetUserRoleResponse);
 }
 
 
@@ -63,6 +64,14 @@ message DeleteUserRequest {
 message DeleteUserResponse {
     bool success = 1;
     string message = 2;
+}
+
+message GetUserRoleRequest {
+    string user_id = 1;
+}
+
+message GetUserRoleResponse {
+    string role = 1;
 }
 
 message Empty {}
